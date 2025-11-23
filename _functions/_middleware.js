@@ -1,23 +1,13 @@
-export default {
-  async fetch(request, env, ctx) {
+console.log("📌 Middleware reached for URL:", request.url);
 
-    const url = new URL(request.url);
+export function onRequest(context) {
+  const url = new URL(context.request.url);
 
-    // PRETTY → REAL
-    const episodeMatch = url.pathname.match(/^\/knowing-bros-eps-(\d+)\.html$/);
-    if (episodeMatch) {
-      url.pathname = `/episode.html`;
-      url.searchParams.set("id", episodeMatch[1]);
-      return Response.redirect(url.toString(), 302);
-    }
-
-    // REAL → PRETTY
-    if (url.pathname === "/episode.html" && url.searchParams.get("id")) {
-      const id = url.searchParams.get("id");
-      const pretty = `${url.origin}/knowing-bros-eps-${id}.html`;
-      return Response.redirect(pretty, 301);
-    }
-
-    return fetch(request);
+  // Detect query format: /episode.html?id=500
+  if (url.pathname === "/episode.html" && url.searchParams.has("id")) {
+    const id = url.searchParams.get("id");
+    return Response.redirect(`${url.origin}/knowing-bros-eps-${id}.html`, 301);
   }
+
+  return context.next();
 }

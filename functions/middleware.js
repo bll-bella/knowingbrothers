@@ -2,7 +2,7 @@ export async function onRequest(context) {
   const url = new URL(context.request.url);
 
   // If not /episode, do nothing
-  if (!url.pathname.startsWith("/episode")) return context.next();
+  if (url.pathname !== "/episode") return context.next();
 
   const id = url.searchParams.get("id");
   if (!id) return context.next();

@@ -116,8 +116,6 @@ function renderEpisodePage(episodes) {
   if (epIndex === -1) return;
 
   const detail = document.getElementById('episode-detail');
-
-	updateViewCounter(id);
 	
   // Parse links
   function parseLinks(text) {
@@ -355,7 +353,9 @@ function renderEpisodePage(episodes) {
       <li><a href="episode.html?id=${e.Episode}">${e.Title}</a></li>
     `).join('');
   }
-  
+ 
+	updateViewCounter(id);
+ 
 }
 
 function isEmptyGuest(value) {

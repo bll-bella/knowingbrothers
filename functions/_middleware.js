@@ -63,9 +63,9 @@ export async function onRequest(context) {
         // sheetData expected: array of episode objects with fields Episode, Title, Description, Image, BintangTamu
         const ep = Array.isArray(sheetData) ? sheetData.find(x => String(x.Episode) === String(id)) : null;
 
-        const ogTitle = ep ? (ep.Title || `Knowing Bros - Episode ${id}`) : `Knowing Bros - Episode ${id}`;
+        const ogTitle = ep ? (ep.Title || `Knowing Bros episode ${id}`) : `Knowing Bros episode ${id}`;
         const ogDesc = ep ? (ep.Description || "") : "";
-        const ogImg = ep ? (ep.Image || `https://www.knowingbrothers.web.id/assets/og-episode-default.jpg`) : `https://www.knowingbrothers.web.id/assets/og-episode-default.jpg`;
+        const ogImg = ep ? (ep.Image || `/images/knowing-bros-thumbnail.webp`) : `https://www.knowingbrothers.web.id/images/knowing-bros-thumbnail.webp`;
 
         const html = `<!doctype html>
 <html lang="id">

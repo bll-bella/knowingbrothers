@@ -2,73 +2,53 @@ export async function onRequest(context) {
   const { request, next } = context;
   const url = new URL(request.url);
   const path = url.pathname;
-  const accept = request.headers.get("accept") || "";
+  const params = url.searchParams;
 
-  // Helper
-  const slugToName = s => decodeURIComponent(s).replace(/-/g, " ").trim();
-  const isCrawler = () => accept.includes("text/html");
-
-  // ==== CATEGORY REWRITE ====
-  // /category/kpop-idol → /category.html?cat=kpop idol
-  const catMatch = path.match(/^\/category\/(.+)$/i);
-  if (catMatch) {
-    const catSlug = catMatch[1];
-    const catName = slugToName(catSlug);
-
-    if (isCrawler()) {
-      // Simple OG (tanpa fetch)
-      const html = `
-      <!doctype html>
-      <html>
-      <head>
-        <meta charset="utf-8" />
-        <meta property="og:title" content="Kategori: ${catName}" />
-        <meta property="og:description" content="Kumpulan episode Knowing Bros kategori ${catName}" />
-        <meta property="og:image" content="https://knowingbrothers.web.id/default-og.jpg" />
-      </head>
-      <body>
-        <script>location.replace("/category.html?cat=${encodeURIComponent(catName)}")</script>
-      </body>
-      </html>`;
-      return new Response(html, { headers: { "Content-Type": "text/html" } });
-    }
-
-    // Browser: rewrite URL ke file aslinya
-    const newUrl = new URL(request.url);
-    newUrl.pathname = "/category.html";
-    newUrl.searchParams.set("cat", catName);
-    return next(new Request(newUrl, request));
+  // ===========================
+  // 1) EPISODE: redirect Jelek → Cantik
+  // ===========================
+  if (path === "/episode.html" && params.has("id")) {
+    const id = params.get("id");
+    return Response.redirect(
+      `${url.origin}/knowing-bros-eps-${id}.html`,
+      301
+    );
   }
 
-  // ==== EPISODE REWRITE ====
-  // /knowing-bros-eps-507.html → /episode.html?id=507
-  const epMatch = path.match(/^\/knowing-bros-eps-(\d+)\.html$/i);
+  // ===========================
+  // 2) CATEGORY redirect Jelek → Cantik
+  // ===========================
+  if (path === "/category.html" && params.has("cat")) {
+    const cat = params.get("cat");
+    const slug = cat.toLowerCase().replace(/\s+/g, "-");
+    return Response.redirect(`${url.origin}/category/${slug}`, 301);
+  }
+
+  // ===========================
+  // 3) Episode URL Cantik → Tampilkan konten asli
+  // ===========================
+  const epMatch = path.match(/^\/knowing-bros-eps-(\d+)\.html$/);
   if (epMatch) {
     const id = epMatch[1];
-
-    if (isCrawler()) {
-      const html = `
-      <!doctype html>
-      <html>
-      <head>
-        <meta charset="utf-8" />
-        <meta property="og:title" content="Knowing Bros Episode ${id}" />
-        <meta property="og:description" content="Nonton Knowing Bros Episode ${id}" />
-        <meta property="og:image" content="https://knowingbrothers.web.id/eps-${id}.jpg" />
-      </head>
-      <body>
-        <script>location.replace("/episode.html?id=${id}")</script>
-      </body>
-      </html>`;
-      return new Response(html, { headers: { "Content-Type": "text/html" } });
-    }
-
     const newUrl = new URL(request.url);
     newUrl.pathname = "/episode.html";
     newUrl.searchParams.set("id", id);
     return next(new Request(newUrl, request));
   }
 
-  // === DEFAULT ===
-  return next(request);
+  // ===========================
+  // 4) Category Cantik → Tampilkan konten asli
+  // ===========================
+  const catMatch = path.match(/^\/category\/(.+)$/);
+  if (catMatch) {
+    const slug = catMatch[1];
+    const cat = slug.replace(/-/g, " ");
+    const newUrl = new URL(request.url);
+    newUrl.pathname = "/category.html";
+    newUrl.searchParams.set("cat", cat);
+    return next(new Request(newUrl, request));
+  }
+
+  // Default serve
+  return next();
 }

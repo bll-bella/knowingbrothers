@@ -104,16 +104,16 @@ export async function onRequest(context) {
   // Tapi hati-hati: jika kamu memblokir episode.html/category.html, worker harus tetap
   // bisa serve ulang mereka via internal next(new Request(...)) — di atas kita mengakses via next()
   // sehingga halaman tetap bisa di-serve. Kita hanya cegah jika user langsung request /episode.html tanpa query.
-  const protectedExact = ["/episode.html", "/category.html", "/script.js", "/data.js"];
-  if (protectedExact.includes(path)) {
+  // const protectedExact = ["/episode.html", "/category.html", "/script.js", "/data.js"];
+  // if (protectedExact.includes(path)) {
     // Jika ada query param yang kita-set (internal rewrite), izinkan via next; tapi user direct -> 404
     // Simpel: jika request berasal dari browser direct (has referer absent and no query), block
-    const hasQuery = !!(url.search && url.search.length > 1);
-    if (!hasQuery) {
-      return new Response("Not Found", { status: 404 });
-    }
+  //   const hasQuery = !!(url.search && url.search.length > 1);
+  //   if (!hasQuery) {
+  //     return new Response("Not Found", { status: 404 });
+  //   }
     // otherwise let it through (next)
-  }
+  // }
 
   // -------- 4) DEFAULT: lanjutkan normal (serve static asset) ----------
   return next(request);

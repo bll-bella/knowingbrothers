@@ -1,0 +1,886 @@
+/* ==========================================================================
+   ONEUI-INSPIRED THEME (Option A: Clean Minimal Flat)
+   Cleaned + structured version of your site CSS (keeps your class names)
+   ========================================================================== */
+
+/* ---------------------------------------
+   Design tokens (colors, spacing, radii)
+   --------------------------------------- */
+:root{
+  /* Colors */
+  --page-bg: #f5f6fa;          /* page background */
+  --surface: #ffffff;          /* cards / panels */
+  --muted: #f2f3f6;            /* soft surfaces */
+  --text: #22262b;             /* main text */
+  --subtext: #6b7280;          /* secondary text */
+  --accent: #4a6cf7;           /* primary accent (OneUI-ish) */
+  --accent-600: #3a57d6;
+  --accent-100: #eef3ff;
+  --ui-border: #e9ecf1;        /* subtle border */
+  --shadow: 0 2px 8px rgba(16,24,40,0.06);
+  --shadow-strong: 0 6px 24px rgba(16,24,40,0.08);
+
+  /* Sizes & spacing */
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 16px;
+  --gap: 16px;
+  --space-xs: 6px;
+  --space-sm: 10px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --container-width: 1100px;
+}
+
+/* ---------------------------------------
+   Base reset & typography
+   --------------------------------------- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html,body { height: 100%; }
+body {
+  font-family: "Inter", "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: var(--page-bg);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 16px;
+  transition: background-color .25s, color .25s;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+/* Utility */
+.container {
+  width: 90%;
+  max-width: var(--container-width);
+  margin: 0 auto;
+}
+
+/* ---------------------------------------
+   HEADER
+   Kept dark as in your screenshots, but cleaned
+   --------------------------------------- */
+.header {
+  background: var(--surface);
+  padding: 14px 0;
+  position: relative;
+  z-index: 10000;
+  box-shadow: var(--shadow);
+}
+
+/* header inner: spacing + center alignment */
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap);
+}
+
+/* logo */
+.logo {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  line-height: 1;
+}
+.logo img { display:block; max-height:48px; width:auto; }
+
+/* header right area */
+.header-right {
+  display:flex;
+  align-items:center;
+  gap: 18px;
+  margin-left: auto;
+}
+
+/* main nav links */
+.nav { display:flex; gap: 18px; align-items:center; }
+.nav-link {
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: .96rem;
+  transition: color .15s ease;
+}
+.nav-link:hover { color: var(--accent-600); opacity: .95; }
+
+/* search icon */
+.search-icon {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+}
+.search-icon svg { color: var(--text); display:block; width:20px; height:20px; transition: color .15s ease;}
+.search-icon svg:hover { color: var(--accent-600);}
+
+/* ---------------------------------------
+   MOBILE NAV / HAMBURGER
+   Kept behavior; visual style cleaned
+   --------------------------------------- */
+.hamburger {
+  width: 30px;
+  height: 20px;
+  display: none; /* shown in mobile media query */
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+.hamburger span {
+  display:block;
+  height:3px;
+  background: var(--text);
+  border-radius: 3px;
+}
+
+/* sliding nav panel (mobile) */
+.header .nav {
+  /* desktop default shown as normal */
+}
+
+/* Overlay behind sliding menu */
+#navOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(13,18,25,0.35);
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .25s ease, visibility .25s;
+  z-index: 998;
+}
+#navOverlay.show { opacity: 1; visibility: visible; }
+
+/* close button inside panel */
+.close-nav {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 22px;
+  color: var(--text);
+  cursor: pointer;
+  z-index: 1002;
+}
+
+/* left icon inside panel */
+.nav-left-icon {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  width: 40px;
+  height: auto;
+  z-index: 1002;
+}
+
+.nav-left-icon img {
+  width: 100%;
+}
+
+/* socials at bottom of panel */
+.nav-socials {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 18px;
+  display:flex;
+  gap: 12px;
+}
+
+/* hide mobile-only elements on desktop */
+.close-nav, .nav-left-icon, .nav-socials, #mobileThemeToggle, .mobileTrakteer { display:none; }
+
+/* ---------------------------------------
+   LAYOUT: main columns
+   --------------------------------------- */
+.layout {
+  display: flex;
+  gap: 28px;
+  margin: calc(var(--space-lg) + 8px) 0;
+}
+
+/* main column and sidebar proportions */
+.main-column { flex: 3; min-width: 0; }
+.sidebar { flex: 1; align-self: flex-start; }
+
+/* ---------------------------------------
+   SKELETON LOADER
+   --------------------------------------- */
+.skeleton-card {
+  height: 120px;
+  margin-bottom: 1.2rem;
+  border-radius: var(--radius);
+  background: linear-gradient(100deg,#eee 40%, #f6f7fb 50%, #eee 60%);
+  background-size: 300% 100%;
+  animation: shimmer 1.2s infinite linear;
+}
+@keyframes shimmer { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
+
+/* ---------------------------------------
+   EPISODE CARD (Homepage list)
+   Clean, flat white card with subtle radius/shadow
+   --------------------------------------- */
+.episode-card {
+  display:flex;
+  align-items:flex-start;
+  gap: 16px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 1.2rem;
+  box-shadow: var(--shadow);
+  transition: transform .12s ease, box-shadow .12s ease;
+  overflow: hidden;
+  /* entrance animation kept */
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeIn .36s ease forwards;
+}
+.episode-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-strong);
+}
+@keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+
+/* thumbnail and content */
+.ep-thumb {
+  width: 120px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 10px;
+  flex-shrink:0;
+  box-shadow: 0 2px 6px rgba(9,30,66,0.06);
+}
+.ep-info { 
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.ep-title {
+  margin: 0;
+}
+.ep-title a {
+  color: var(--text);
+  text-decoration: none;
+  font-size: 1.05rem;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 4px;
+}
+.ep-title a:hover { color: var(--accent); }
+
+.ep-desc {
+  color: var(--subtext);
+  font-size: .85rem;
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* responsive episode card layout */
+@media (max-width: 768px) {
+  .episode-card { flex-direction: column; align-items:center; text-align:center; }
+  .ep-thumb { width:100%; height:auto; }
+  .ep-info { width:100% !important; margin: -15px 0 5px; }
+  .ep-desc {display:block;}
+}
+
+/* ---------------------------------------
+   BREADCRUMB (Episode page)
+   Placed directly between title and image
+   --------------------------------------- */
+.breadcrumb {
+  font-size: .9rem;
+  color: var(--subtext);
+  margin: 8px 0 12px;
+  float: left;
+}
+.breadcrumb a { color: var(--accent); text-decoration: none; font-weight: 500; }
+.breadcrumb span { margin: 0 8px; color: #c7cbd6; }
+
+/* ---------------------------------------
+   EPISODE DETAIL PAGE
+   --------------------------------------- */
+#episode-detail {
+  margin-bottom: 20px;
+}	
+
+.ep-image {
+  width: 100%;
+  border-radius: var(--radius);
+  margin: 14px 0;
+  box-shadow: 0 2px 8px rgba(9,30,66,0.04);
+}
+
+/* Streaming Tab */
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.tab-btn {
+  padding: 10px 16px;
+  background: #e4e4e4;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  font-size: 15px;
+}
+
+.tab-btn.active {
+  background: #0080ff;
+  color: white;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+.video-wrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 ratio */
+}
+
+.video-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 10px;
+}
+
+.thumb {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+.thumb-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.thumb-overlay img.thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(70%); /* agak gelap agar icon lebih jelas */
+}
+
+.play-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70px;
+  height: 70px;
+  background: rgba(255, 255, 255, 0.85);
+  clip-path: polygon(30% 20%, 80% 50%, 30% 80%);
+  border-radius: 8px;
+  transition: 0.2s ease-in-out;
+  pointer-events: none
+}
+
+/* Efek hover biar lebih "hidup" */
+.thumb-overlay:hover .play-icon {
+  background: rgba(255, 255, 255, 1);
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+
+/* detail text & meta */
+.dl-title { margin-top: 18px; font-weight:600; color:var(--text); }
+.download-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  background: transparent;
+}
+.download-table th, .download-table td {
+  padding: 12px 14px;
+  text-align: left;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--ui-border);
+  border-top: 1px solid var(--ui-border);  
+  background: transparent;
+  color: var(--text);
+}
+.download-table th { width: 150px; font-weight:600; color:var(--subtext); }
+
+/* download links as soft pills */
+.download-links { list-style:none; padding-left:0; margin:0; display:flex; gap:10px; flex-wrap:wrap; }
+.download-links a {
+  display:inline-block;
+  padding: 4px 10px;
+  border-radius: 10px;
+  background: var(--accent-100);
+  color: var(--accent-600);
+  text-decoration: none;
+  font-size: .88rem;
+  font-weight:600;
+  border: 2px solid var(--ui-border);
+}
+.download-links a:hover { background: #e6efff; color: var(--accent-600); }
+
+/* ---------------------------------------
+   PAGINATION (Homepage trimmed + first/last)
+   --------------------------------------- */
+.pagination {
+  display:flex;
+  gap:8px;
+  justify-content:center;
+  align-items:center;
+  margin-top: 22px;
+  flex-wrap:wrap;
+}
+.page-btn, .page-ellipsis {
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: var(--surface);
+  color: #4b5563;
+  box-shadow: 0 2px 6px rgba(9,30,66,0.03);
+  text-decoration: none;
+  font-weight:600;
+}
+.page-btn:hover { background: var(--accent-100); color: var(--accent-600); }
+.page-btn.active { background: var(--accent); color: #fff; box-shadow: none; }
+
+/* episode detail Prev/Next mini pagination */
+#episode-pagination { display:flex; justify-content:space-between; gap:10px; margin: 24px 0; flex-wrap:wrap; }
+#episode-pagination .ep-page-btn {
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: var(--accent);
+  color:#fff;
+  text-decoration:none;
+  font-weight:600;
+}
+#episode-pagination .ep-page-btn:hover { opacity: .8; }
+
+
+/* ---------------------------------------
+   SIDEBAR
+   --------------------------------------- */
+.sidebar {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 14px;
+  box-shadow: var(--shadow);
+  width:100%;
+}
+.sidebar h3 { margin-bottom: 12px; color: var(--text); font-size:1rem; }
+#latest-list { list-style:none; padding:0; margin:0; }
+#latest-list li{ display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+#latest-list li::before { content:""; width:14px; height:14px; display:inline-block;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%23444' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><polygon points='8,5 18,12 8,19'/></svg>");
+  background-size:contain; background-repeat:no-repeat;
+}
+#latest-list li a, #top-viewed-list li a { color: var(--text); text-decoration:none; transition: color .18s; }
+#latest-list li a:hover, #top-viewed-list li a:hover { color: var(--accent); }
+
+#top-viewed-list {list-style:inside;}
+#top-viewed-list li {margin-bottom:6px; }
+
+/* follow icons in sidebar (small neutral circles) */
+.follow-widget, .tvl { margin-top: 22px; }
+.follow-widget .follow-icons { display:flex; gap:10px; margin-top:10px; }
+.follow-btn {
+  width:38px; height:38px; border-radius:999px; display:inline-flex; align-items:center; justify-content:center;
+  background: #f1f3f6; border:none; transition: background .15s ease, transform .12s;
+}
+.follow-btn svg { width:18px; height:18px; fill:#4b5563; }
+.follow-btn:hover { background: #e7ecff; transform: translateY(-2px); }
+.follow-btn:hover svg { fill: var(--accent); }
+
+.trakteer {margin:20px 0 10px;}
+
+/* ---------------------------------------
+   SOCIAL SHARE BOX
+   --------------------------------------- */
+.share-heading { font-size: 1rem; margin-top: 18px; font-weight:600; color:var(--text); }
+.share-box { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0 20px; }
+.share-btn {
+  display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:10px;
+  background: var(--surface); color:var(--text); border: 1px solid var(--ui-border); text-decoration:none;
+}
+.share-btn svg { width:16px; height:16px; }
+
+
+/* ---------------------------------------
+   EPS LIST PAGE
+   --------------------------------------- */
+/* Container item */
+.acc-item {
+  border-radius: 10px;
+  margin: 12px 0 12px;
+  background: var(--acc-bg, #f7f7f9);
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+/* Dark mode */
+body.dark-mode .acc-item {
+  background: var(--surface);
+  border-color: rgba(255,255,255,0.12);
+}
+
+/* Header */
+.acc-header {
+  width: 100%;
+  background: transparent;
+  padding: 14px 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  color: inherit;
+}
+body.dark-mode .acc-header {color: var(--text);}
+
+/* Arrow */
+.acc-arrow {
+  transition: transform 0.25s ease;
+  opacity: 0.7;
+}
+
+.acc-arrow.rotate {
+  transform: rotate(180deg);
+}
+
+/* Body */
+.acc-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+  padding-left: 0;
+}
+
+/* Body opened */
+.acc-body.open {
+  padding: 8px 16px 16px 22px;
+}
+
+/* List */
+.season-list {
+  margin: 0;
+  padding-left: 1.2rem;
+  font-size: 0.96rem;
+  line-height: 1.45;
+}
+
+.season-list li {list-style-type:none;}
+body.dark-mode .season-list li {color: var(--subtext);}
+
+.season-list li::before{ content:""; width:14px; height:14px; display:inline-block;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%23444' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><polygon points='8,5 18,12 8,19'/></svg>");
+  background-size:contain; background-repeat:no-repeat;
+}
+
+/* Episode link */
+.ep-link {
+  text-decoration: none;
+  color: #0066cc;
+}
+
+body.dark-mode .ep-link {
+  color: #66aaff;
+}
+
+.ep-link:hover {
+  text-decoration: underline;
+}
+
+/* ---------------------------------------
+   CATEGORY
+   --------------------------------------- */
+.ep-tag {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 50px;
+    font-size: 0.65rem;
+    margin: 5px 3px 5px 0;
+    text-decoration: none;
+    font-weight: 600;
+	float:right;
+}
+.ep-tag:hover {
+    opacity: .8;
+}
+
+.category-wrapper {
+  flex: 3;
+  min-width: 0;
+}
+
+#catTitle {margin-bottom:20px; }
+
+/* ---------------------------------------
+   FOOTER
+   --------------------------------------- */
+.footer {
+  background:var(--surface); color:var(--text); font-weight:600; text-align:center; padding:14px 0; margin-top: 32px; box-shadow: var(--shadow);
+}
+
+/* ---------------------------------------
+   FORMS, SEARCH MODAL
+   --------------------------------------- */
+.search-modal { display:none !important; position:fixed; inset:0; z-index:12000; justify-content:center; align-items:flex-start; padding-top:6vh; opacity:0; pointer-events:none; transition:opacity .2s; }
+.search-modal.open { display:flex !important; opacity:1; pointer-events:all; }
+.search-content { width:92%; max-width:640px; background:var(--surface); border-radius:var(--radius); padding:16px; box-shadow: var(--shadow-strong); }
+#searchInput { width:100%; padding:10px; border-radius:8px; border:1px solid var(--ui-border); font-size:1rem; }
+#searchResults {margin-top:10px; }
+#searchResults li {list-style-type:none; margin-left:10px; }
+#searchResults li::before{ content:""; width:14px; height:14px; display:inline-block;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%23444' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><polygon points='8,5 18,12 8,19'/></svg>");
+  background-size:contain; background-repeat:no-repeat;
+}
+.close-btn {
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: var(--accent);
+  color: var(--accent-100);
+  text-decoration: none;
+  font-weight: 600;
+  border: none;
+  float: right;
+  cursor: pointer;
+  margin-bottom: 5px;
+}
+
+/* ---------------------------------------
+   SMALL UI & UTILITY CLASSES
+   --------------------------------------- */
+.text-muted { color: var(--subtext); font-size:.95rem; }
+.btn { display:inline-block; padding:8px 14px; border-radius:10px; background:var(--accent); color:#fff; text-decoration:none; font-weight:600; }
+.card { background:var(--surface); border-radius:var(--radius); padding:var(--space-md); box-shadow:var(--shadow); }
+
+/* ---------------------------------------
+   RESPONSIVE
+   Keep breakpoints simple to match your layout
+   --------------------------------------- */
+@media (max-width: 1100px) {
+  .layout { gap: 18px; }
+  .container { width:94%; }
+}
+
+@media (max-width: 900px) {
+  .layout { flex-direction: column; gap: 18px; }
+  .sidebar { order: 2; }
+  .main-column { order: 1; }
+}
+
+/* Mobile specific rules */
+@media (max-width: 600px) {
+  .hamburger { display:flex; }
+  .nav, #themeToggle { display:none; } /* hide desktop nav on small screens; sliding panel shows */
+  .header { padding: 10px 0; }
+  .logo img { max-height:42px; }
+
+  /* mobile sliding panel style */
+  .header .nav {
+    position: fixed;
+    top: 0;
+    right: calc(-1 * min(260px, 80vw));
+    width: min(260px, 80vw);
+    height: 100vh;
+    padding: 86px 16px 84px 16px;
+    background: var(--surface);
+    display:flex !important;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+    box-shadow: -6px 0 18px rgba(9,30,66,0.06);
+    transition: right .28s ease;
+    z-index: 1000;
+    overflow:hidden;
+  }
+  .header .nav.open { right: 0; }
+
+  .header-right { gap: 8px; }
+  .ep-title a { font-size: 1.05rem; }
+  .page-btn, .ep-page-btn { font-size:.95rem; padding:8px 10px; }
+  .episode-card { padding:12px; }
+  .sidebar { padding: 12px; }
+  .follow-btn { width:34px;height:34px; }
+  
+  .nav-link {border-bottom: 1px solid var(--ui-border); width: 100%;}
+  .breadcrumb, .ep-tag {float:none; }
+  
+  .download-table tr { display: inline-grid; }
+  .download-table th { border-bottom:none; padding-bottom: 0; }
+  .download-table td { border-top:none; }
+}
+
+/* Ensure the mobile-only elements show on small screens */
+@media (max-width:600px) {
+  .close-nav, .nav-left-icon, .nav-socials, #mobileThemeToggle, .mobileTrakteer { display:block; }
+}
+
+
+/* =========================
+   DARK MODE + THEME TOGGLE
+   Append to the end of your CSS file
+   ========================= */
+
+/* Theme toggle button (desktop + mobile-friendly) */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.06);
+  color: inherit;
+  cursor: pointer;
+  transition: background .18s ease, transform .12s ease, border-color .18s ease;
+  padding: 4px;
+}
+.theme-toggle:hover { transform: translateY(-1px); }
+
+/* icon inside toggle */
+.theme-toggle svg {
+  width: 24px;
+  height: 24px;
+  display: block;
+  transition: transform .18s ease, color .18s ease;
+  color: currentColor;
+}
+
+/* When in light (default) make toggle subtle */
+.theme-toggle { background: transparent; border-color: rgba(0,0,0,0.06); color: var(--text); }
+
+.icon-moon { display: none; }
+
+html.dark .icon-sun { display: none; }
+html.dark .icon-moon { display: block; }
+
+/* Dark-mode variable overrides — uses same variable names as your :root */
+body.dark-mode {
+  --page-bg: #071018;
+  --surface: #0f1720;
+  --muted: #0b1116;
+  --text: #e6eef8;
+  --subtext: #9aa4b2;
+  --accent: #63b3ff;
+  --accent-600: #3a9be0;
+  --accent-100: #0c1b2b;
+  --ui-border: #16202a;
+  --shadow: 0 6px 18px rgba(2,6,12,0.6);
+  --shadow-strong: 0 10px 30px rgba(2,6,12,0.65);
+}
+
+/* Make the page background follow variables */
+body.dark-mode {
+  background: var(--page-bg);
+  color: var(--text);
+}
+
+/* header/footer adjustments in dark mode */
+body.dark-mode .header {
+  background: #07121a; /* darker header */
+  color: var(--text);
+  box-shadow: var(--shadow);
+}
+body.dark-mode .header .nav-link { color: var(--text); }
+body.dark-mode .header .nav-link:hover { color: var(--accent); }
+body.dark-mode .footer {
+  background: #07121a;
+  color: #9fb3c9;
+  box-shadow: var(--shadow);
+}
+
+/* surfaces and cards */
+body.dark-mode .sidebar,
+body.dark-mode .episode-card,
+body.dark-mode .search-content,
+body.dark-mode .card {
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  color: var(--text);
+}
+
+/* tags & pagination */
+
+body.dark-mode .ep-tag,
+body.dark-mode #episode-pagination .ep-page-btn {
+  background: var(--text);
+  color:var(--surface);
+}
+
+/* borders, table lines */
+body.dark-mode .download-table th,
+body.dark-mode .download-table td,
+body.dark-mode .share-btn {
+  border-color: var(--ui-border);
+}
+
+/* pages links and accents */
+body.dark-mode .ep-title a { color: var(--text); }
+body.dark-mode .ep-title a:hover { color: var(--accent); }
+body.dark-mode .page-btn { background: var(--surface); color: var(--subtext); box-shadow: none; }
+body.dark-mode .page-btn.active { background: var(--accent); color: #fff; }
+
+/* toggle style changes in dark */
+body.dark-mode .theme-toggle { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.06); color: var(--text); }
+
+/* mobile sliding panel: ensure the panel inherits dark-mode if active */
+body.dark-mode .header .nav {
+  color: var(--text);
+}
+
+/* small tweak: icon color contrast for follow buttons in dark */
+body.dark-mode .follow-btn { background: #09121a; }
+body.dark-mode .follow-btn svg { fill: #cfe8ff; }
+
+/* Optional nice transition for theme change */
+:root, body, .header, .sidebar, .episode-card, .footer {
+  transition: background-color .22s ease, color .22s ease, box-shadow .22s ease, border-color .22s ease;
+}
+
+/* Ensure the toggle is visible on mobile sliding nav when present */
+@media (max-width:600px) {
+  .nav .theme-toggle { display:inline-flex; position: absolute; top: 16px; right: 60px; z-index: 1003; }
+}
+
+
+/* ---------------------------------------
+   End of file
+   --------------------------------------- */

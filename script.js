@@ -99,6 +99,9 @@ function renderEpisodePage(episodes) {
   const id = params.get('id');
   const ep = episodes.find(e => e.Episode === id);
   if (!ep) return;
+  
+  // === UPDATE PAGE TITLE DINAMIS ===
+  document.title = ep.Title || `Knowing Bros eps ${id}`;
 
   const epIndex = episodes.findIndex(e => e.Episode === id);
   if (epIndex === -1) return;
@@ -285,10 +288,9 @@ function renderEpisodePage(episodes) {
 
   // ===== SHARE BUTTONS =====
   const episode = new URLSearchParams(location.search).get("ep");
-	const ogUrl = `https://cnbella20.workers.dev/ep/${episode}`;
 
 	// overwrite currentURL yang lama
-	const currentURL = ogUrl;
+	const currentURL = window.location.href;
   const shareTitle = ep.Title;
   const shareImage = ep.Image || "";
 

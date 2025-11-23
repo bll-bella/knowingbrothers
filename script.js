@@ -296,7 +296,6 @@ function renderEpisodePage(episodes) {
 	window.loadStream = loadStream;
 
   // ===== SHARE BUTTONS =====
-  const id = new URLSearchParams(location.search).get("id");
 
 	// overwrite currentURL yang lama
 	const currentURL = window.location.href;

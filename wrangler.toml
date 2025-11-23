@@ -1,7 +1,3 @@
-name = "knowingbrothers"
-pages_build_output_dir = "./"
-compatibility_flags = ["nodejs_compat"]
+name = "kbros"
 compatibility_date = "2025-01-01"
-
-[placement]
-mode = "smart"
+main = "_worker.js"

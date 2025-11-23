@@ -1,0 +1,6 @@
+# === EXCEPTIONS (file yang tidak di-override) ===
+/index.html      /index.html      200
+/category.html   /category.html   200
+
+# === OVERRIDE UNTUK SEMUA FILE .html LAIN ===
+/*.html          /*.html          200

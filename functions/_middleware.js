@@ -1,9 +1,11 @@
 export async function onRequest(context) {
   const url = new URL(context.request.url);
 
-	if (url.pathname === "/episode") {
+	if (url.pathname.endsWith(".html")) {
+		return context.next();
+	}
+    if (url.pathname === "/episode") {
     const id = url.searchParams.get("id");
-
     if (!id) return context.next();
 
     const sheetURL = "https://script.google.com/macros/s/AKfycbwWlea_SjngQGs3UlNC9LT99LQlKhXsAqbjBY4Zm2KtqO3_LwuckoOiYb54W9P_7khO/exec";

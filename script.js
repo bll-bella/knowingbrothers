@@ -99,6 +99,18 @@ function renderEpisodePage(episodes) {
   const id = params.get('id');
   const ep = episodes.find(e => e.Episode === id);
   if (!ep) return;
+  
+  // === UPDATE PAGE TITLE ===
+  document.title = ep.Title || `Knowing Bros Episode ${id}`;
+  
+  const desc = ep.Description || "";
+	let metaDesc = document.querySelector('meta[name="description"]');
+	if (!metaDesc) {
+	  metaDesc = document.createElement("meta");
+	  metaDesc.setAttribute("name", "description");
+	  document.head.appendChild(metaDesc);
+	}
+	metaDesc.setAttribute("content", desc);
 
   const epIndex = episodes.findIndex(e => e.Episode === id);
   if (epIndex === -1) return;

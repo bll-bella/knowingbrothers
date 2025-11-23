@@ -284,7 +284,7 @@ function renderEpisodePage(episodes) {
 	window.loadStream = loadStream;
 
   // ===== SHARE BUTTONS =====
-  // const episode = new URLSearchParams(location.search).get("ep");
+  const episode = new URLSearchParams(location.search).get("ep");
 
 	// overwrite currentURL yang lama
 	const currentURL = window.location.href;
@@ -818,4 +818,3 @@ function updateViewCounter(episodeId) {
 
 
 document.getElementById("year").textContent = new Date().getFullYear();
-

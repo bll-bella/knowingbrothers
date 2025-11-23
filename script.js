@@ -285,10 +285,9 @@ function renderEpisodePage(episodes) {
 
   // ===== SHARE BUTTONS =====
   const episode = new URLSearchParams(location.search).get("ep");
-	const ogUrl = `https://cnbella20.workers.dev/ep/${episode}`;
 
 	// overwrite currentURL yang lama
-	const currentURL = ogUrl;
+	const currentURL = window.location.href;
   const shareTitle = ep.Title;
   const shareImage = ep.Image || "";
 
@@ -819,3 +818,4 @@ function updateViewCounter(episodeId) {
 
 
 document.getElementById("year").textContent = new Date().getFullYear();
+

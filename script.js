@@ -294,9 +294,7 @@ function renderEpisodePage(episodes) {
 	window.loadStream = loadStream;
 
   // ===== SHARE BUTTONS =====
-
-	// overwrite currentURL yang lama
-	const currentURL = window.location.href;
+  //  const currentURL = window.location.href;
   const shareTitle = ep.Title;
   const shareImage = ep.Image || "";
   const prettyURL = `${location.origin}/knowing-bros-eps-${id}.html`;

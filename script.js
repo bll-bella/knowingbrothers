@@ -99,23 +99,13 @@ function renderEpisodePage(episodes) {
   const id = params.get('id');
   const ep = episodes.find(e => e.Episode === id);
   if (!ep) return;
-  
-  // === UPDATE PAGE TITLE ===
-  document.title = ep.Title || `Knowing Bros Episode ${id}`;
-  
-  const desc = ep.Description || "";
-	let metaDesc = document.querySelector('meta[name="description"]');
-	if (!metaDesc) {
-	  metaDesc = document.createElement("meta");
-	  metaDesc.setAttribute("name", "description");
-	  document.head.appendChild(metaDesc);
-	}
-	metaDesc.setAttribute("content", desc);
 
   const epIndex = episodes.findIndex(e => e.Episode === id);
   if (epIndex === -1) return;
 
   const detail = document.getElementById('episode-detail');
+
+	updateViewCounter(id);
 	
   // Parse links
   function parseLinks(text) {
@@ -294,25 +284,27 @@ function renderEpisodePage(episodes) {
 	window.loadStream = loadStream;
 
   // ===== SHARE BUTTONS =====
-  //  const currentURL = window.location.href;
+  const episode = new URLSearchParams(location.search).get("ep");
+
+	// overwrite currentURL yang lama
+	const currentURL = window.location.href;
   const shareTitle = ep.Title;
   const shareImage = ep.Image || "";
-  const prettyURL = `${location.origin}/knowing-bros-eps-${id}.html`;
 
   document.getElementById("share-fb").href =
-    `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(prettyURL)}`;
+    `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentURL)}`;
 
   document.getElementById("share-x").href =
-    `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareTitle)}&url=${encodeURIComponent(prettyURL)}`;
+    `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareTitle)}&url=${encodeURIComponent(currentURL)}`;
 
   document.getElementById("share-wa").href =
-    `https://wa.me/?text=${encodeURIComponent(shareTitle + " " + prettyURL)}`;
+    `https://wa.me/?text=${encodeURIComponent(shareTitle + " " + currentURL)}`;
 
   document.getElementById("share-tg").href =
-    `https://t.me/share/url?url=${encodeURIComponent(prettyURL)}&text=${encodeURIComponent(shareTitle)}`;
+    `https://t.me/share/url?url=${encodeURIComponent(currentURL)}&text=${encodeURIComponent(shareTitle)}`;
 
   document.getElementById("share-pin").href =
-    `https://www.pinterest.com/pin/create/button/?url=${encodeURIComponent(prettyURL)}&media=${encodeURIComponent(shareImage)}&description=${encodeURIComponent(shareTitle)}`;
+    `https://www.pinterest.com/pin/create/button/?url=${encodeURIComponent(currentURL)}&media=${encodeURIComponent(shareImage)}&description=${encodeURIComponent(shareTitle)}`;
 
   // ===== PAGINATION (Prev / Next)
   const paginationContainer = document.getElementById('episode-pagination');
@@ -351,9 +343,7 @@ function renderEpisodePage(episodes) {
       <li><a href="episode.html?id=${e.Episode}">${e.Title}</a></li>
     `).join('');
   }
- 
-	updateViewCounter(id);
- 
+  
 }
 
 function isEmptyGuest(value) {

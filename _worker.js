@@ -92,16 +92,16 @@ export default {
     // ================================
     // 5. SEMBUNYIKAN FILE ASLI (JS/HTML) DARI PUBLIC ACCESS
     // ================================
-    // == const protectedFiles = [
-    // ==  "/episode.html",
-    // ==  "/category.html",
-    // ==  "/script.js",
-    // ==  "/data.js"
-    // ==];
+    const protectedFiles = [
+      "/episode.html",
+      "/category.html",
+      "/script.js",
+      "/data.js"
+    ];
 
-    // ==if (protectedFiles.includes(path)) {
-    // ==  return new Response("Not Found", { status: 404 });
-    // ==}
+    if (protectedFiles.includes(path)) {
+      return new Response("Not Found", { status: 404 });
+    }
 
     // ================================
     // 6. SERVE STATIC FILES DEFAULT

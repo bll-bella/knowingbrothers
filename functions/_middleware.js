@@ -55,7 +55,7 @@ export async function onRequest(context) {
     if (shouldServeOg(accept)) {
       // Fetch Google Sheet (your existing sheet->json endpoint)
       // Replace with your actual Google Sheet JSON endpoint
-      const sheetUrl = "YOUR_GOOGLE_SHEET_JSON_URL";
+      const sheetUrl = "https://docs.google.com/spreadsheets/d/12kQqrG2P-xUfiVS6w5hxEV-eprn7EuIWfS5IC981cd8/gviz/tq?tqx=out:json&gid=0";
 
       try {
         const sres = await fetch(sheetUrl);

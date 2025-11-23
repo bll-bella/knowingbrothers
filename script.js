@@ -715,7 +715,7 @@ function renderCategoryPage(episodes) {
     const container = document.getElementById("categoryResults");
     const title = document.getElementById("catTitle");
     if (!container || !title) return;
-
+	
     // SORT KHUSUS UNTUK CATEGORY (copy array agar array asli tidak rusak)
     const sortedEpisodes = [...episodes].sort((a, b) => Number(a.Episode) - Number(b.Episode));
 

@@ -36,7 +36,7 @@ export async function onRequest(context) {
     <meta property="og:title" content="${title}" />
     <meta property="og:description" content="${desc}" />
     <meta property="og:image" content="${image}" />
-    <meta property="og:url" content="https://kbbaru.pages.dev//episode/${id}" />
+    <meta property="og:url" content="https://kbbaru.pages.dev/episode/${id}" />
   `;
 
   html = html.replace("</head>", meta + "\n</head>");

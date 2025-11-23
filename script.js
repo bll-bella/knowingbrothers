@@ -97,23 +97,17 @@ function getEpisodeGroups(guest) {
 function renderEpisodePage(episodes) {
   const params = new URLSearchParams(window.location.search);
   const id = params.get('id');
+  const ep = episodes.find(e => e.Episode === id);
+  if (!ep) return;
+
   const epIndex = episodes.findIndex(e => e.Episode === id);
   if (epIndex === -1) return;
-  const ep = episodes[epIndex];
 
   const detail = document.getElementById('episode-detail');
-  if (!detail) return;
 
-  updateViewCounter(id);
-
-  function escape(s) {
-    return String(s)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
-  }
-
+	updateViewCounter(id);
+	
+  // Parse links
   function parseLinks(text) {
     if (!text) return '';
     const parts = text.split('|').map(t => t.trim()).filter(Boolean);
@@ -122,37 +116,42 @@ function renderEpisodePage(episodes) {
       const url = parts[i];
       const label = parts[i + 1] || "Download";
       if (url.startsWith('http')) {
-        html += `<li><a href="${escape(url)}" target="_blank" rel="noopener">${escape(label)}</a></li>`;
+        html += `<li><a href="${url}" target="_blank">${label}</a></li>`;
       }
     }
     html += '</ul>';
     return html;
   }
 
+  // ===== CATEGORY TAG (HARUS DITARUH SEBELUM dipakai)
   const guestText = [
-    ep.BintangTamu || "",
-    ep.BintangSpesial || ""
-  ].filter(Boolean).join(", ");
-  const groups = getEpisodeGroups(guestText);
+	  ep.BintangTamu || "",
+	  ep.BintangSpesial || ""
+	].filter(Boolean).join(", ");
+
+	const groups = getEpisodeGroups(guestText);
 
   const tagHTML = groups.length
     ? groups.map(g => 
-        `<a href="category.html?cat=${encodeURIComponent(g)}" class="ep-tag">${escape(g)}</a>`
+        `<a href="category.html?cat=${encodeURIComponent(g)}" class="ep-tag">${g}</a>`
       ).join('')
     : "";
 
+  // ===== RENDER HTML UTAMA
   detail.innerHTML = `
-    <h2>${escape(ep.Title)}</h2>
+    <h2>${ep.Title}</h2>
     <nav id="breadcrumb" class="breadcrumb"></nav>
     ${tagHTML}
-    <img src="${escape(ep.Image)}" alt="${escape(ep.Description)}" class="ep-image">
-    <p>${escape(ep.Description)}</p>
+    <img src="${ep.Image}" alt="${ep.Description}" class="ep-image">
+    <p>${ep.Description}</p>
+
     <br/>
     <p>
-      Bintang tamu : ${escape(ep.BintangTamu || "")}<br/>
-      Bintang tamu spesial : ${escape(ep.BintangSpesial || "")}
+      Bintang tamu : ${ep.BintangTamu}<br/>
+      Bintang tamu spesial : ${ep.BintangSpesial}
     </p>
-    <h3 class="dl-title">Streaming Video</h3>
+
+	<h3 class="dl-title">Streaming Video</h3>
 
     <div class="tabs">
       <button class="tab-btn active" data-tab="1">Server 1</button>
@@ -161,15 +160,15 @@ function renderEpisodePage(episodes) {
     </div>
 
     <div id="tab-1" class="tab-content active"><div class="video-wrapper" data-stream="Stream1">
-      <img src="${escape(ep.Image)}" class="thumb" onclick="loadStream(this)"><div class="play-icon"></div>
+      <img src="${ep.Image}" class="thumb" onclick="loadStream(this)"><div class="play-icon"></div>
     </div></div>
 
     <div id="tab-2" class="tab-content"><div class="video-wrapper" data-stream="Stream2">
-      <img src="${escape(ep.Image)}" class="thumb" onclick="loadStream(this)"><div class="play-icon"></div>
+      <img src="${ep.Image}" class="thumb" onclick="loadStream(this)"><div class="play-icon"></div>
     </div></div>
 
     <div id="tab-3" class="tab-content"><div class="video-wrapper" data-stream="Stream3">
-      <img src="${escape(ep.Image)}" class="thumb" onclick="loadStream(this)"><div class="play-icon"></div>
+      <img src="${ep.Image}" class="thumb" onclick="loadStream(this)"><div class="play-icon"></div>
     </div></div>
 
     <h3 class="dl-title">Download Links</h3>
@@ -191,8 +190,8 @@ function renderEpisodePage(episodes) {
         <th>540p Tanpa Sub</th>
         <td>${parseLinks(ep["540p_Tanpa_Sub"])}</td>
       </tr>` : ''}
-      
-      ${ep["720p_Tanpa_Sub"] ? `
+	  
+	  ${ep["720p_Tanpa_Sub"] ? `
       <tr>
         <th>720p Tanpa Sub</th>
         <td>${parseLinks(ep["720p_Tanpa_Sub"])}</td>
@@ -203,8 +202,8 @@ function renderEpisodePage(episodes) {
         <th>1080p Tanpa Sub</th>
         <td>${parseLinks(ep["1080p_Tanpa_Sub"])}</td>
       </tr>` : ''}
-      
-      ${ep["Subtitle"] ? `
+	  
+	   ${ep["Subtitle"] ? `
       <tr>
         <th>File Subtitle</th>
         <td>${parseLinks(ep["Subtitle"])}</td>
@@ -212,48 +211,62 @@ function renderEpisodePage(episodes) {
     </table>
   `;
 
-  // Breadcrumb
+  // ===== BREADCRUMB
   const breadcrumb = document.getElementById('breadcrumb');
   if (breadcrumb) {
     breadcrumb.innerHTML = `
       <a href="index.html">Home</a> 
       <span>›</span>
-      Knowing Bros episode ${escape(ep.Episode)} (${escape(ep.Season)})
+      Knowing Bros episode ${ep.Episode} (${ep.Season})
     `;
   }
+  
+  // ===== STREAM TAB =====
+	// document.getElementById("iframe1").src = ep.Stream1 || "";
+	// document.getElementById("iframe2").src = ep.Stream2 || "";
+	// document.getElementById("iframe3").src = ep.Stream3 || "";
 
-  // Tab logic
-  const buttons = document.querySelectorAll(".tab-btn");
-  const tabs = document.querySelectorAll(".tab-content");
+	// ====== Tab switching logic ======
+	const buttons = document.querySelectorAll(".tab-btn");
+	const tabs = document.querySelectorAll(".tab-content");
 
-  buttons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      let tab = btn.dataset.tab;
-      buttons.forEach(b => b.classList.remove("active"));
-      tabs.forEach((t, i) => {
-        t.classList.remove("active");
-        // reset video
-        const wrapper = t.querySelector(".video-wrapper");
-        if (wrapper) {
-          wrapper.innerHTML = `
-            <div class="thumb-overlay" onclick="loadStream(this)">
-              <img src="${escape(ep.Image)}" class="thumb">
-              <div class="play-icon"></div>
-            </div>
-          `;
-        }
-      });
-      btn.classList.add("active");
-      document.getElementById(`tab-${tab}`).classList.add("active");
-    });
-  });
+	buttons.forEach(btn => {
+	  btn.addEventListener("click", () => {
+		let tab = btn.dataset.tab;
 
-  function loadStream(el) {
+		// Hide all
+		buttons.forEach(b => b.classList.remove("active"));
+		tabs.forEach(t => {
+		  t.classList.remove("active");
+
+		  // RESET semua video utk mencegah auto-load
+		  const wrapper = t.querySelector(".video-wrapper");
+		  if (wrapper) {
+			const key = wrapper.dataset.stream;
+
+			wrapper.innerHTML = `
+			  <div class="thumb-overlay" onclick="loadStream(this)">
+				<img src="${ep.Image}" class="thumb">
+				<div class="play-icon"></div>
+			  </div>
+			`;
+		  }
+		});
+
+		// Show selected tab
+		btn.classList.add("active");
+		document.getElementById(`tab-${tab}`).classList.add("active");
+	  });
+	});
+	
+	function loadStream(el) {
     const wrapper = el.closest(".video-wrapper");
-    if (!wrapper) return;
     const key = wrapper.dataset.stream; // Stream1 / Stream2 / Stream3
     const url = ep[key];
+
     if (!url) return;
+
+    // Buat iframe baru
     const iframe = document.createElement("iframe");
     iframe.src = url;
     iframe.allowFullscreen = true;
@@ -263,27 +276,38 @@ function renderEpisodePage(episodes) {
     iframe.style.position = "absolute";
     iframe.style.top = "0";
     iframe.style.left = "0";
-    wrapper.innerHTML = "";
-    wrapper.appendChild(iframe);
-  }
-  window.loadStream = loadStream;
 
-  // Social share buttons
-  const currentURL = window.location.href;
+    wrapper.innerHTML = ""; // hapus thumbnail
+    wrapper.appendChild(iframe);
+	}
+	
+	window.loadStream = loadStream;
+
+  // ===== SHARE BUTTONS =====
+  const episode = new URLSearchParams(location.search).get("ep");
+	const ogUrl = `https://cnbella20.workers.dev/ep/${episode}`;
+
+	// overwrite currentURL yang lama
+	const currentURL = ogUrl;
   const shareTitle = ep.Title;
   const shareImage = ep.Image || "";
 
-  function safeSetHref(id, url) {
-    const elem = document.getElementById(id);
-    if (elem) elem.href = url;
-  }
-  safeSetHref("share-fb", `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentURL)}`);
-  safeSetHref("share-x", `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareTitle)}&url=${encodeURIComponent(currentURL)}`);
-  safeSetHref("share-wa", `https://wa.me/?text=${encodeURIComponent(shareTitle + " " + currentURL)}`);
-  safeSetHref("share-tg", `https://t.me/share/url?url=${encodeURIComponent(currentURL)}&text=${encodeURIComponent(shareTitle)}`);
-  safeSetHref("share-pin", `https://www.pinterest.com/pin/create/button/?url=${encodeURIComponent(currentURL)}&media=${encodeURIComponent(shareImage)}&description=${encodeURIComponent(shareTitle)}`);
+  document.getElementById("share-fb").href =
+    `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentURL)}`;
 
-  // Pagination (Prev/Next)
+  document.getElementById("share-x").href =
+    `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareTitle)}&url=${encodeURIComponent(currentURL)}`;
+
+  document.getElementById("share-wa").href =
+    `https://wa.me/?text=${encodeURIComponent(shareTitle + " " + currentURL)}`;
+
+  document.getElementById("share-tg").href =
+    `https://t.me/share/url?url=${encodeURIComponent(currentURL)}&text=${encodeURIComponent(shareTitle)}`;
+
+  document.getElementById("share-pin").href =
+    `https://www.pinterest.com/pin/create/button/?url=${encodeURIComponent(currentURL)}&media=${encodeURIComponent(shareImage)}&description=${encodeURIComponent(shareTitle)}`;
+
+  // ===== PAGINATION (Prev / Next)
   const paginationContainer = document.getElementById('episode-pagination');
   if (paginationContainer) {
     let html = "";
@@ -295,8 +319,8 @@ function renderEpisodePage(episodes) {
     if (epIndex < episodes.length - 1) {
       const prev = episodes[epIndex + 1];
       html += `
-        <a href="episode.html?id=${encodeURIComponent(prev.Episode)}" class="ep-page-btn prev">
-          ← Prev: ${escape(truncateTitle(prev.Title))}
+        <a href="episode.html?id=${prev.Episode}" class="ep-page-btn prev">
+          ← Prev: ${truncateTitle(prev.Title)}
         </a>
       `;
     }
@@ -304,8 +328,8 @@ function renderEpisodePage(episodes) {
     if (epIndex > 0) {
       const next = episodes[epIndex - 1];
       html += `
-        <a href="episode.html?id=${encodeURIComponent(next.Episode)}" class="ep-page-btn next">
-          Next: ${escape(truncateTitle(next.Title))} →
+        <a href="episode.html?id=${next.Episode}" class="ep-page-btn next">
+          Next: ${truncateTitle(next.Title)} →
         </a>
       `;
     }
@@ -313,13 +337,14 @@ function renderEpisodePage(episodes) {
     paginationContainer.innerHTML = html;
   }
 
-  // Sidebar Latest
+  // ===== SIDEBAR LATEST
   const latest = document.getElementById('latest-list');
   if (latest) {
     latest.innerHTML = episodes.slice(0, 5).map(e => `
-      <li><a href="episode.html?id=${encodeURIComponent(e.Episode)}">${escape(e.Title)}</a></li>
+      <li><a href="episode.html?id=${e.Episode}">${e.Title}</a></li>
     `).join('');
   }
+  
 }
 
 function isEmptyGuest(value) {
@@ -689,7 +714,7 @@ function renderCategoryPage(episodes) {
     const title = document.getElementById("catTitle");
     if (!container || !title) return;
 
-    // SORT KHUSUS UNTUK CATEGORY
+    // SORT KHUSUS UNTUK CATEGORY (copy array agar array asli tidak rusak)
     const sortedEpisodes = [...episodes].sort((a, b) => Number(a.Episode) - Number(b.Episode));
 
     const params = new URLSearchParams(window.location.search);
@@ -708,39 +733,45 @@ function renderCategoryPage(episodes) {
         return;
     }
 
-    function isEmptyGuest(value) {
-        if (!value) return true;
-        const v = String(value).trim().toLowerCase();
-        const empties = ["", "-", "—", "n/a", "no guest", "tidak ada"];
-        return empties.includes(v);
-    }
+	function isEmptyGuest(value) {
+	  if (!value) return true;
+	  const v = String(value).trim().toLowerCase();
+	  const empties = ["", "-", "—", "n/a", "No Guest", "tidak ada"];
+	  return empties.includes(v);
+	}
+
+	const descText = isEmptyGuest(ep.BintangTamu)
+	  ? (ep.Description || "")
+	  : `${ep.Description || ""} dengan bintang tamu ${ep.BintangTamu}`;
 
     container.innerHTML = filtered.map(ep => {
 
-        const descText = isEmptyGuest(ep.BintangTamu)
-            ? (ep.Description || "")
-            : `${ep.Description || ""} dengan bintang tamu ${ep.BintangTamu}`;
+    const descText = isEmptyGuest(ep.BintangTamu)
+        ? (ep.Description || "")
+        : `${ep.Description || ""} dengan bintang tamu ${ep.BintangTamu}`;
 
-        return `
-            <div class="episode-card">
-                <a href="episode.html?id=${ep.Episode}">
-                    <img src="${ep.Image}" class="ep-thumb">
-                </a>
-                <div class="ep-info">
-                    <h2 class="ep-title">
-                        <a href="episode.html?id=${ep.Episode}">${ep.Title}</a>
-                    </h2>
+    return `
+        <div class="episode-card">
+            <a href="episode.html?id=${ep.Episode}">
+                <img src="${ep.Image}" class="ep-thumb">
+            </a>
+            <div class="ep-info">
+                <h2 class="ep-title">
+                    <a href="episode.html?id=${ep.Episode}">${ep.Title}</a>
+                </h2>
 
-                    <p class="ep-desc">${descText.substring(0, 250)}</p>
-                </div>
+                <p class="ep-desc">${descText.substring(0, 250)}</p>
             </div>
-        `;
-    }).join("");
+        </div>
+    `;
+}).join("");
 
     // ===== SIDEBAR LATEST =====
     const latest = document.getElementById('latest-list');
     if (latest) {
+        // Sort episode terbesar → terkecil khusus untuk latest
         const latestSorted = [...episodes].sort((a, b) => Number(b.Episode) - Number(a.Episode));
+
         latest.innerHTML = latestSorted.slice(0, 5).map(e => `
             <li><a href="episode.html?id=${e.Episode}">${e.Title}</a></li>
         `).join('');
@@ -790,7 +821,6 @@ function updateViewCounter(episodeId) {
   })
   .catch(err => console.error("Update view error:", err));
 }
-
 
 
 document.getElementById("year").textContent = new Date().getFullYear();

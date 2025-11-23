@@ -12,7 +12,7 @@ export async function onRequest(context) {
 
     if (isBot) {
       // FETCH data dari Google Sheets
-      const sheetURL = "URL_GOOGLE_SHEET_JSON_KAMU";
+      const sheetURL = "https://script.google.com/macros/s/AKfycbwWlea_SjngQGs3UlNC9LT99LQlKhXsAqbjBY4Zm2KtqO3_LwuckoOiYb54W9P_7khO/exec";
       let data = [];
       try {
         const res = await fetch(sheetURL);
@@ -23,7 +23,7 @@ export async function onRequest(context) {
       const ep = data.find(e => String(e.Episode) === id);
       const ogTitle = ep?.Title || `Knowing Bros Episode ${id}`;
       const ogDesc  = ep?.Description || "";
-      const ogImg   = ep?.Image || "https://kbbaru.pages.dev/default.jpg";
+      const ogImg   = ep?.Image || "/images/knowing-bros-thumbnail.webp";
 
       const html = `<!DOCTYPE html>
 <html lang="id">

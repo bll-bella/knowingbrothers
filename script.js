@@ -626,75 +626,6 @@ function renderEpisodeTextPage(episodes) {
 }
 
 
-function renderCategoryPage(episodes) {
-    const container = document.getElementById("categoryResults");
-    const title = document.getElementById("catTitle");
-    if (!container || !title) return;
-	
-    // SORT KHUSUS UNTUK CATEGORY (copy array agar array asli tidak rusak)
-    const sortedEpisodes = [...episodes].sort((a, b) => Number(a.Episode) - Number(b.Episode));
-
-    const params = new URLSearchParams(window.location.search);
-    const cat = params.get("cat");
-    if (!cat) return;
-
-    title.textContent = `Knowing Bros episode ${cat}`;
-
-    const filtered = sortedEpisodes.filter(ep => {
-        const g = getEpisodeGroups(ep.BintangTamu);
-        return g.includes(cat.toUpperCase());
-    });
-
-    if (filtered.length === 0) {
-        container.innerHTML = `<p>No episodes found for this category.</p>`;
-        return;
-    }
-
-	function isEmptyGuest(value) {
-	  if (!value) return true;
-	  const v = String(value).trim().toLowerCase();
-	  const empties = ["", "-", "—", "n/a", "No Guest", "tidak ada"];
-	  return empties.includes(v);
-	}
-
-	const descText = isEmptyGuest(ep.BintangTamu)
-	  ? (ep.Description || "")
-	  : `${ep.Description || ""} dengan bintang tamu ${ep.BintangTamu}`;
-
-    container.innerHTML = filtered.map(ep => {
-
-    const descText = isEmptyGuest(ep.BintangTamu)
-        ? (ep.Description || "")
-        : `${ep.Description || ""} dengan bintang tamu ${ep.BintangTamu}`;
-
-    return `
-        <div class="episode-card">
-            <a href="episode.html?id=${ep.Episode}">
-                <img src="${ep.Image}" class="ep-thumb">
-            </a>
-            <div class="ep-info">
-                <h2 class="ep-title">
-                    <a href="episode.html?id=${ep.Episode}">${ep.Title}</a>
-                </h2>
-
-                <p class="ep-desc">${descText.substring(0, 250)}</p>
-            </div>
-        </div>
-    `;
-}).join("");
-
-    // ===== SIDEBAR LATEST =====
-    const latest = document.getElementById('latest-list');
-    if (latest) {
-        // Sort episode terbesar → terkecil khusus untuk latest
-        const latestSorted = [...episodes].sort((a, b) => Number(b.Episode) - Number(a.Episode));
-
-        latest.innerHTML = latestSorted.slice(0, 5).map(e => `
-            <li><a href="episode.html?id=${e.Episode}">${e.Title}</a></li>
-        `).join('');
-    }
-}
-
 
 // Initialize everything once
 loadEpisodes().then(episodes => {
@@ -779,6 +710,75 @@ const hamburgerBtn = document.getElementById("hamburgerBtn");
   // expose on window if needed (optional)
   window.toggleTheme = toggleTheme;
 })();
+
+function renderCategoryPage(episodes) {
+    const container = document.getElementById("categoryResults");
+    const title = document.getElementById("catTitle");
+    if (!container || !title) return;
+	
+    // SORT KHUSUS UNTUK CATEGORY (copy array agar array asli tidak rusak)
+    const sortedEpisodes = [...episodes].sort((a, b) => Number(a.Episode) - Number(b.Episode));
+
+    const params = new URLSearchParams(window.location.search);
+    const cat = params.get("cat");
+    if (!cat) return;
+
+    title.textContent = `Knowing Bros episode ${cat}`;
+
+    const filtered = sortedEpisodes.filter(ep => {
+        const g = getEpisodeGroups(ep.BintangTamu);
+        return g.includes(cat.toUpperCase());
+    });
+
+    if (filtered.length === 0) {
+        container.innerHTML = `<p>No episodes found for this category.</p>`;
+        return;
+    }
+
+	function isEmptyGuest(value) {
+	  if (!value) return true;
+	  const v = String(value).trim().toLowerCase();
+	  const empties = ["", "-", "—", "n/a", "No Guest", "tidak ada"];
+	  return empties.includes(v);
+	}
+
+	const descText = isEmptyGuest(ep.BintangTamu)
+	  ? (ep.Description || "")
+	  : `${ep.Description || ""} dengan bintang tamu ${ep.BintangTamu}`;
+
+    container.innerHTML = filtered.map(ep => {
+
+    const descText = isEmptyGuest(ep.BintangTamu)
+        ? (ep.Description || "")
+        : `${ep.Description || ""} dengan bintang tamu ${ep.BintangTamu}`;
+
+    return `
+        <div class="episode-card">
+            <a href="episode.html?id=${ep.Episode}">
+                <img src="${ep.Image}" class="ep-thumb">
+            </a>
+            <div class="ep-info">
+                <h2 class="ep-title">
+                    <a href="episode.html?id=${ep.Episode}">${ep.Title}</a>
+                </h2>
+
+                <p class="ep-desc">${descText.substring(0, 250)}</p>
+            </div>
+        </div>
+    `;
+}).join("");
+
+    // ===== SIDEBAR LATEST =====
+    const latest = document.getElementById('latest-list');
+    if (latest) {
+        // Sort episode terbesar → terkecil khusus untuk latest
+        const latestSorted = [...episodes].sort((a, b) => Number(b.Episode) - Number(a.Episode));
+
+        latest.innerHTML = latestSorted.slice(0, 5).map(e => `
+            <li><a href="episode.html?id=${e.Episode}">${e.Title}</a></li>
+        `).join('');
+    }
+}
 
 function loadTopViewed() {
   const topViewedList = document.getElementById("top-viewed-list");

@@ -1,0 +1,53 @@
+[
+  {
+    "ep_num": 1,
+    "slug": "episode-1",
+    "title": "Pertemuan Tak Terduga",
+    "guest": "-",
+    "guest_special": "",
+    "thumb": "../assets/img/sample-thumb.jpg",
+    "stream1_url": "https://tpi.li/streamA",
+    "stream2_url": "https://tpi.li/streamB",
+    "stream3_url": "",
+    "dl_360p_sub_indo": "https://tpi.li/aaa | Hxfile | https://tpi.li/bbb | Mega",
+    "dl_540p_raw": "",
+    "dl_720p_sub_indo": "https://tpi.li/ccc | Pixeldrain",
+    "dl_720p_raw": "",
+    "dl_1080p_raw": "",
+    "subtitle": "https://subdl.com/id1 | Subtitle Bhs. Indonesia | https://subdl.com/en1 | Subtitle Bhs. Inggris"
+  },
+  {
+    "ep_num": 2,
+    "slug": "episode-2",
+    "title": "Rahasia di Balik Senja",
+    "guest": "-",
+    "guest_special": "Kim Heechul (cameo dadakan)",
+    "thumb": "../assets/img/sample-thumb.jpg",
+    "stream1_url": "https://tpi.li/streamC",
+    "stream2_url": "",
+    "stream3_url": "",
+    "dl_360p_sub_indo": "https://tpi.li/ddd | Hxfile",
+    "dl_540p_raw": "",
+    "dl_720p_sub_indo": "",
+    "dl_720p_raw": "",
+    "dl_1080p_raw": "",
+    "subtitle": "https://subdl.com/id2 | Subtitle Bhs. Indonesia"
+  },
+  {
+    "ep_num": 3,
+    "slug": "episode-3",
+    "title": "Bayang-Bayang Masa Lalu",
+    "guest": "Dewi Lestari",
+    "guest_special": "",
+    "thumb": "../assets/img/sample-thumb.jpg",
+    "stream1_url": "",
+    "stream2_url": "",
+    "stream3_url": "",
+    "dl_360p_sub_indo": "",
+    "dl_540p_raw": "",
+    "dl_720p_sub_indo": "",
+    "dl_720p_raw": "",
+    "dl_1080p_raw": "",
+    "subtitle": ""
+  }
+]
